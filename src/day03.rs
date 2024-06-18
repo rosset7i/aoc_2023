@@ -6,65 +6,63 @@ pub fn part_1() -> u32 {
     let symbols = Vec::from(['*', '$', '@', '=', '+', '-', '/', '%', '#', '&']);
     let mut all_numbers: Vec<String> = Vec::new();
 
-    for (i, line) in file.lines().enumerate() {
+    let lines: Vec<&str> = file.lines().collect();
+
+    for (i, line) in lines.iter().enumerate() {
         let mut num: Vec<(char, bool)> = Vec::new();
 
-        for (y, char) in line.chars().enumerate() {
+        let chars: Vec<char> = line.chars().collect();
+
+        for (y, char) in chars.iter().enumerate() {
             if !char.is_numeric() {
                 continue;
             }
-            let next_element = line.chars().nth(y + 1).unwrap_or('.');
-            let top_element = file
-                .lines()
-                .nth(i + 1)
-                .unwrap_or(".")
+            let next_element = chars.get(y + 1).unwrap_or(&'.');
+            let top_element = lines
+                .get(i + 1)
+                .unwrap_or(&".")
                 .chars()
                 .nth(y)
                 .unwrap_or('.');
             let mut bottom_element = '.';
             let mut diagonal_bottom_next = '.';
             if i != 0 {
-                bottom_element = file
-                    .lines()
-                    .nth(i - 1)
-                    .unwrap_or(".")
+                bottom_element = lines
+                    .get(i - 1)
+                    .unwrap_or(&".")
                     .chars()
                     .nth(y)
                     .unwrap_or('.');
 
-                diagonal_bottom_next = file
-                    .lines()
-                    .nth(i - 1)
-                    .unwrap_or(".")
+                diagonal_bottom_next = lines
+                    .get(i - 1)
+                    .unwrap_or(&".")
                     .chars()
                     .nth(y + 1)
                     .unwrap_or('.');
             }
             let mut diagonal_bottom_last = '.';
             if i != 0 && y != 0 {
-                diagonal_bottom_last = file
-                    .lines()
-                    .nth(i - 1)
-                    .unwrap_or(".")
+                diagonal_bottom_last = lines
+                    .get(i - 1)
+                    .unwrap_or(&".")
                     .chars()
                     .nth(y - 1)
                     .unwrap_or('.');
             }
-            let diagonal_top_next = file
-                .lines()
-                .nth(i + 1)
-                .unwrap_or(".")
+            let diagonal_top_next = lines
+                .get(i + 1)
+                .unwrap_or(&".")
                 .chars()
                 .nth(y + 1)
                 .unwrap_or('.');
             let mut diagonal_top_last = '.';
-            let mut last_element = '.';
+            let mut last_element = &'.';
             if y != 0 {
-                last_element = line.chars().nth(y - 1).unwrap_or('.');
-                diagonal_top_last = file
-                    .lines()
-                    .nth(i + 1)
-                    .unwrap_or(".")
+                last_element = chars.get(y - 1).unwrap_or(&'.');
+                diagonal_top_last = lines
+                    .get(i + 1)
+                    .unwrap_or(&".")
                     .chars()
                     .nth(y - 1)
                     .unwrap_or('.');
@@ -80,7 +78,7 @@ pub fn part_1() -> u32 {
                 || symbols.contains(&next_element);
 
             if char.is_numeric() {
-                num.push((char, is_symbol));
+                num.push((*char, is_symbol));
             }
 
             if char.is_numeric() && !next_element.is_numeric() {
