@@ -8,6 +8,7 @@ fn main() {
 
 fn process(input: &str) -> String {
     let mut parts: Vec<Part> = Vec::new();
+    let mut symbols: HashSet<(i16, i16)> = HashSet::new();
 
     let mut current_digit: Option<Part> = None;
     for (row, line) in input.lines().enumerate() {
@@ -21,15 +22,21 @@ fn process(input: &str) -> String {
                 if let Some(current_digit) = current_digit.take() {
                     parts.push(current_digit);
                 }
+                if char != '.' {
+                    symbols.insert((row as i16, col as i16));
+                }
             }
         }
     }
 
-    dbg!(parts);
-    return "".to_string();
+    return parts
+        .iter()
+        .filter(|x| x.points.intersection(&symbols).next().is_some())
+        .map(|x| x.value.parse::<i64>().unwrap())
+        .sum::<i64>()
+        .to_string();
 }
 
-#[derive(Debug)]
 struct Part {
     value: String,
     points: HashSet<(i16, i16)>,
